@@ -4,7 +4,7 @@ const app = express();
 
 // Разрешаем запросы с http://localhost:3000
 app.use(cors({
-  origin: 'http://localhost:3000'
+  origin: 'https://localhost:3000'
 }));
 
 app.get('/', (req, res) => {
@@ -12,5 +12,5 @@ app.get('/', (req, res) => {
 });
 
 app.listen(3000, () => {
-  console.log('Сервер запущен на http://localhost:3000');
+  console.log('Сервер запущен на https://localhost:3000');
 });
