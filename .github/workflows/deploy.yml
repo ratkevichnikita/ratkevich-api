@@ -24,6 +24,11 @@ jobs:
             cd /var/www/ratkevich-api &&
             git fetch --all &&
             git reset --hard origin/main &&
-            npm install &&
-            pm2 restart ratkevich-api
+            echo 'CLIENT_ID=${{ secrets.CLIENT_ID }}' > .env &&
+            echo 'AUTHORIZATION_KEY=${{ secrets.AUTHORIZATION_KEY }}' >> .env &&
+            echo 'SCOPE=${{ secrets.SCOPE }}' >> .env &&
+            python3 -m venv venv &&  # Создание виртуального окружения
+            source venv/bin/activate &&  # Активация виртуального окружения
+            pip install fastapi uvicorn &&  # Установка зависимостей
+            pm2 start python --name ratkevich-api -- main.py  # Запуск через PM2
           "
