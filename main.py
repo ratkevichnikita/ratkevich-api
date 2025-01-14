@@ -13,7 +13,7 @@ app.add_middleware(
 
 @app.get("/")
 def read_root():
-return {"message": "Все настроено! Проверка автодеплоя"}
+    return {"message": "Все настроено! Проверка автодеплоя"}
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
