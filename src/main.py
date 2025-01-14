@@ -17,8 +17,8 @@ def read_root():
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from src.assistant import Assistant
-from src.utils import extract_text_from_folder
+from assistant import Assistant
+from utils import extract_text_from_folder
 import os
 
 app = FastAPI()
