@@ -1,8 +1,7 @@
-from gigachain import GigaChain
-from gigachat import GigaChat
+from langchain_gigachat import GigaChat
 from langchain.text_splitter import CharacterTextSplitter
-from langchain.embeddings import OpenAIEmbeddings
 from langchain.vectorstores import FAISS
+from langchain_gigachat.embeddings import GigaChatEmbeddings
 import os
 from dotenv import load_dotenv
 
@@ -11,12 +10,11 @@ load_dotenv()
 
 class Assistant:
     def __init__(self):
-        self.chain = GigaChain(
-            authorization=os.getenv("AUTHORIZATION_KEY"),
-            client_id=os.getenv("CLIENT_ID"),
-            scope=os.getenv("SCOPE")
+        self.chat = GigaChat(
+            credentials=os.getenv("GIGACHAT_CREDENTIALS"),
+            scope=os.getenv("GIGACHAT_SCOPE", "GIGACHAT_API_PERS"),
+            verify_ssl_certs=False  # Отключение проверки сертификатов (для тестирования)
         )
-        self.chat = GigaChat()
         self.docsearch = None  # Инициализируем позже
 
     def load_documents(self, texts):
@@ -25,7 +23,7 @@ class Assistant:
         """
         text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
         texts = text_splitter.split_text(texts)
-        embeddings = OpenAIEmbeddings()
+        embeddings = GigaChatEmbeddings(credentials=os.getenv("GIGACHAT_CREDENTIALS"))
         self.docsearch = FAISS.from_texts(texts, embeddings)
 
     def ask(self, question):
@@ -34,11 +32,11 @@ class Assistant:
         """
         if not self.docsearch:
             raise ValueError("Документы не загружены!")
-        
+
         # Найдем релевантные фрагменты
         docs = self.docsearch.similarity_search(question, k=3)
         context = "\n".join([doc.page_content for doc in docs])
-        
+
         # Зададим вопрос
-        response = self.chain.process(context=context, question=question)
-        return response
+        response = self.chat.invoke(f"Контекст: {context}\n\nВопрос: {question}")
+        return response.content

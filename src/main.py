@@ -1,20 +1,3 @@
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-
-app = FastAPI()
-
-app.add_middleware(
-  CORSMiddleware,
-  allow_origins=["http://localhost:3000", "https://localhost:3000"],
-  allow_credentials=True,
-  allow_methods=["*"],
-  allow_headers=["*"],
-)
-
-@app.get("/")
-def read_root():
-    return {"message": "Все настроено! Проверка автодеплоя"}
-
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from assistant import Assistant
@@ -23,12 +6,14 @@ import os
 
 app = FastAPI()
 
+# Извлечение текста из PDF-файлов
 doctors_text = extract_text_from_folder("data/doctors")
 company_text = extract_text_from_folder("data/company")
 sales_text = extract_text_from_folder("data/sales")
 
 combined_text = doctors_text + company_text + sales_text
 
+# Инициализация ассистента
 assistant = Assistant()
 assistant.load_documents(combined_text)
 
