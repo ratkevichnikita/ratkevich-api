@@ -1,1 +1,7 @@
+langchain-core
+langchain-community
 langchain-gigachat
+langchain-chroma
+chromadb
+pdfplumber
+pypdf
